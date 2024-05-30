@@ -2,11 +2,37 @@ import logo from './logo.svg';
 import './App.css';
 import HomePage from './Pages/HomePage';
 import Navbar from './Components/Navbar';
+import Test from './Components/Test';
+import LoginPage from './Pages/LoginPage';
+import Land from './Pages/Land';
+import { Routes, Route } from 'react-router-dom';
+import Signup from './Pages/SignUp';
+import PrivateRoute from './Pages/PrivateRoute.page';
+import { UserProvider } from "./contexts/user.context";
 function App() {
+  const t = true;
+  const f = false;
   return (
     <main>
       <Navbar />
-      <HomePage />
+      <div className='flex'>
+        <Test />
+        <div className='ml-[10rem] container'>
+          <UserProvider>
+            <Routes>
+
+              <Route element={<PrivateRoute />}>
+                <Route exact path="/" element={<HomePage />} />
+              </Route>
+
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login/buyer" element={<LoginPage />} />
+              <Route path="/login/seller" element={<LoginPage />} />
+            </Routes>
+          </UserProvider>
+        </div>
+      </div>
     </main>
   );
 }
