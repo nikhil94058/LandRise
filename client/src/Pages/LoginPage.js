@@ -115,7 +115,7 @@ const LoginPage = () => {
 
             </div>
             <div className=''>
-              <img className=" h-screen" src="/res/seller.svg" />
+              <img className=" h-screen" src="/res/admin.svg" />
             </div>
 
           </div>

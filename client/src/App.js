@@ -20,15 +20,16 @@ function App() {
         <div className='ml-[10rem] container'>
           <UserProvider>
             <Routes>
-
+              <Route exact path="//LandRise/" element={<HomePage />} />
               <Route element={<PrivateRoute />}>
-                <Route exact path="/" element={<HomePage />} />
+                <Route exact path="//LandRise/" element={<HomePage />} />
               </Route>
 
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login/buyer" element={<LoginPage />} />
-              <Route path="/login/seller" element={<LoginPage />} />
+              <Route path="/LandRise/login" element={<LoginPage />} />
+              <Route path="/LandRise/signup" element={<Signup />} />
+              <Route path="/LandRise/login/buyer" element={<LoginPage />} />
+              <Route path="/LandRise/login/seller" element={<LoginPage />} />
+              <Route path="/*" element={<>Page Not Found!</>} />
             </Routes>
           </UserProvider>
         </div>
@@ -38,3 +39,8 @@ function App() {
 }
 
 export default App;
+{
+  /*
+  
+  */
+}

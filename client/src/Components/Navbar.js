@@ -3,10 +3,10 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 const navigation = [
-  { name: 'Buy', href: '#', current: true },
-  { name: 'Sell/Rent', href: '#', current: false },
-  { name: ' Transaction', href: '#', current: false },
-  { name: 'Your Properties', href: '#', current: false },
+  { name: 'Buy', href: '/', current: true },
+  { name: 'Sell/Rent', href: '/login', current: false },
+  { name: ' Transaction', href: '/seller', current: false },
+  { name: 'Your Properties', href: '/login', current: false },
 ]
 
 function classNames(...classes) {
@@ -30,13 +30,13 @@ export default function Navbar() {
       <nav className=" w-screen bg-yellow-500 border-yellow-700">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <a
-            href="https://flowbite.com/"
+            href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
             <img
               src="/res/logo.svg"
               className="h-8"
-              alt="Flowbite Logo"
+              alt="LandRise"
             />
             <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
               LandSol
@@ -140,7 +140,7 @@ export default function Navbar() {
                 <ul role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                   <li>
                     <a
-                      href="#"
+                      href="/LandRise/login"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={closeDropdown}
                     >
@@ -149,7 +149,7 @@ export default function Navbar() {
                   </li>
                   <li>
                     <a
-                      href="#"
+                      href="/LandRise/login"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       onClick={closeDropdown}
                     >
