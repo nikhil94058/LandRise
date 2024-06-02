@@ -1,71 +1,91 @@
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
 
-import { useContext, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
-
-const Signup = () => {
+const SignUp = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  // As explained in the Login page.
-  const { emailPasswordSignup } = useContext(UserContext);
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
+  async function submit(e) {
+    e.preventDefault();
 
-  // As explained in the Login page.
-  const onFormInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
+    try {
+      await axios.post("http://localhost:8000/signup", {
+        email,
+        password
+      })
+        .then(res => {
+          if (res.data === "success") {
+            navigate("/home", { state: { id: email } });
+          } else if (res.data === "exist") {
+            alert("User already exists");
+          }
+        })
+        .catch(e => {
+          alert("Error occurred during signup");
+          console.log(e);
+        });
 
-  // As explained in the Login page.
-  const redirectNow = () => {
-    const redirectTo = location.search.replace("?redirectTo=", "");
-    navigate(redirectTo ? redirectTo : "/");
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  // As explained in the Login page.
-  const onSubmit = async () => {
-    try {
-      const user = await emailPasswordSignup(form.email, form.password);
-      if (user) {
-        redirectNow();
-      }
-    } catch (error) {
-      alert(error);
-    }
-  };
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign up for an account</h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={submit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">Email address</label>
+              <input id="email-address" name="email" type="email" autoComplete="email" required
+                value={email} onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Email address" />
+            </div>
+            <div>
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input id="password" name="password" type="password" autoComplete="current-password" required
+                value={password} onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Password" />
+            </div>
+            <div>
+              <label htmlFor="confirm-password" className="sr-only">Confirm Password</label>
+              <input id="confirm-password" name="confirm-password" type="password" autoComplete="confirm-password" required
+                value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Confirm Password" />
+            </div>
+          </div>
 
-  return <form style={{ display: "flex", flexDirection: "column", maxWidth: "300px", margin: "auto" }}>
-    <div className="text-black text-[40px] font-semibold font-['Inter']">Signup</div>
-    <input
-      label="Email"
-      type="email"
-      variant="outlined"
-      name="email"
-      value={form.email}
-      onInput={onFormInputChange}
-      className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black"
-      style={{ marginBottom: "1rem" }}
-    />
-    <input
-      label="Password"
-      type="password"
-      variant="outlined"
-      className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black"
-      name="password"
-      value={form.password}
-      onInput={onFormInputChange}
-      style={{ marginBottom: "1rem" }}
-    />
-    <button variant="contained" className="w-1/3 h-full bg-yellow-400 rounded-[50px] border-2 border-black" color="primary" onClick={onSubmit}>
-      Signup
-    </button>
-    <p>Have an account already? <Link to="/login">Login</Link></p>
-  </form>
-}
+          <div>
+            <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                <svg className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM9 12a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H9zm0-8a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+              </span>
+              Sign up
+            </button>
+          </div>
+        </form>
+        <div className="text-sm text-center">
+          <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">Already have an account? Log in</Link>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default Signup;
+export default SignUp;

@@ -1,193 +1,88 @@
-import React from 'react'
-import { useContext, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { UserContext } from "../contexts/user.context";
-
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from "react";
 
 const LoginPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const admin = true;
-  const buyer = false;
-  const seller = false;
+  const history = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  // We are consuming our user-management context to
-  // get & set the user details here
-  const { user, fetchUser, emailPasswordLogin } = useContext(UserContext);
+  async function submit(e) {
+    e.preventDefault();
 
-  // We are using React's "useState" hook to keep track
-  //  of the form values.
-  const [form, setForm] = useState({
-    email: "",
-    password: ""
-  });
-
-
-  const onFormInputChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const redirectNow = () => {
-    const redirectTo = location.search.replace("?redirectTo=", "");
-    navigate(redirectTo ? redirectTo : "/");
-  }
-
-  // Once a user logs in to our app, we don’t want to ask them for their
-  // credentials again every time the user refreshes or revisits our app, 
-  // so we are checking if the user is already logged in and
-  // if so we are redirecting the user to the home page.
-  // Otherwise we will do nothing and let the user to login.
-
-  const loadUser = async () => {
-    if (!user) {
-      const fetchedUser = await fetchUser();
-      if (fetchedUser) {
-        // Redirecting them once fetched.
-        redirectNow();
-      }
-    }
-  }
-
-  useEffect(() => {
-    loadUser(); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
-  // This function gets fired when the user clicks on the "Login" button.
-  const onSubmit = async (event) => {
     try {
-      // Here we are passing user details to our emailPasswordLogin
-      // function that we imported from our realm/authentication.js
-      // to validate the user credentials and log in the user into our App.
-      const user = await emailPasswordLogin(form.email, form.password);
-      if (user) {
-        redirectNow();
-      }
-    } catch (error) {
-      if (error.statusCode === 401) {
-        alert("Invalid username/password. Try again!");
-      } else {
-        alert(error);
-      }
+      await axios.post("http://localhost:8000/", {
+        email, password
+      })
+        .then(res => {
+          if (res.data === "exist") {
+            history("/", { state: { id: email } });
+          } else if (res.data === "notexist") {
+            alert("User has not signed up");
+          }
+        })
+        .catch(e => {
+          alert("Wrong details");
+          console.log(e);
+        });
 
+    } catch (e) {
+      console.log(e);
     }
-  };
-
+  }
 
   return (
-    <div>
-      {admin &&
-        <div className='w-full'>
-          <div className='flex flex-col md:justify-end md:flex-row'>
-            <div className='w-1/2 mt-[5rem] p-1 '>
-              <center >
-
-                <div className="text-black text-[40px] font-semibold font-['Inter']">Signup/Login as Admin</div>
-                <div className='space-between space-y-5 m-2 p-4 flex flex-col'>
-                  <input label="Email"
-                    type="email"
-                    variant="outlined"
-                    name="email"
-                    value={form.email}
-                    onInput={onFormInputChange}
-                    className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black"
-                    style={{ marginBottom: "1rem" }} />
-                  <input label="Password"
-                    type="password"
-                    variant="outlined"
-                    name="password"
-                    value={form.password}
-                    onInput={onFormInputChange}
-                    className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black"
-                    style={{ marginBottom: "1rem" }} />
-                  <a href=""><div className="text-black text-sm ml-7 font-medium font-['Inter']">Forgot Password?</div></a>
-                </div>
-
-                <button className="w-1/3 h-full bg-yellow-400 rounded-[50px] border-2 border-black"
-                  onClick={onSubmit}>
-                  Login
-                </button>
-                <a href=""><div className="text-black text-sm ml-7 font-medium font-['Inter']"> <p>Don't have an account? <Link to="/signup">Signup</Link></p></div></a>
-
-              </center>
-
-
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Log in to your account</h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={submit}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="email-address" className="sr-only">Email address</label>
+              <input id="email-address" name="email" type="text" autoComplete="email" required
+                value={email} onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Email address" />
             </div>
-            <div className=''>
-              <img className=" h-screen" src="/res/admin.svg" />
+            <div>
+              <label htmlFor="password" className="sr-only">Password</label>
+              <input id="password" name="password" type="password" autoComplete="current-password" required
+                value={password} onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Password" />
             </div>
-
           </div>
 
-        </div>
-      }
-
-      {
-        buyer &&
-        <div className='w-full'>
-          <div className='flex flex-col md:justify-end md:flex-row'>
-            <div className='w-1/2 mt-[5rem] p-1 '>
-              <center >
-
-                <div className="text-black text-[40px] font-semibold font-['Inter']">Signup/Login as Admin</div>
-                <div className='space-between space-y-5 m-2 p-4 flex flex-col'>
-                  <input type="text" className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black" />
-                  <input type="text" className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black" />
-                  <a href=""><div className="text-black text-sm ml-7 font-medium font-['Inter']">Forgot Password?</div></a>
-                </div>
-
-                <button className="w-1/3 h-full bg-yellow-400 rounded-[50px] border-2 border-black">
-                  Login
-                </button>
-
-              </center>
-
-
-            </div>
-            <div className=''>
-              <img className=" h-screen" src="/res/seller.svg" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input id="remember-me" name="remember-me" type="checkbox" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">Remember me</label>
             </div>
 
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Forgot your password?</a>
+            </div>
           </div>
 
-        </div>
-      }
-
-
-
-      {seller &&
-        <div className='w-full'>
-          <div className='flex flex-col md:justify-end md:flex-row'>
-            <div className='w-1/2 mt-[5rem] p-1 '>
-              <center >
-
-                <div className="text-black text-[40px] font-semibold font-['Inter']">Signup/Login as Admin</div>
-                <div className='space-between space-y-5 m-2 p-4 flex flex-col'>
-                  <input type="text" className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black" />
-                  <input type="text" className="w-auto h-full bg-zinc-300 rounded-[50px] border-2 border-black" />
-                  <a href=""><div className="text-black text-sm ml-7 font-medium font-['Inter']">Forgot Password?</div></a>
-                </div>
-
-                <button className="w-1/3 h-full bg-yellow-400 rounded-[50px] border-2 border-black">
-                  Login
-                </button>
-
-              </center>
-
-
-            </div>
-            <div className=''>
-              <img className=" h-screen" src="/res/seller.svg" />
-            </div>
-
+          <div>
+            <button type="submit" className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                <svg className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M10 0a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM9 12a1 1 0 0 1-2 0V9a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H9zm0-8a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg>
+              </span>
+              Sign in
+            </button>
           </div>
-
+        </form>
+        <div className="text-sm text-center">
+          <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Don't have an account? Sign up</Link>
         </div>
-      }
-
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

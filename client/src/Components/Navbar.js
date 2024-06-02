@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
+import { useLocation } from "react-router-dom";
 const navigation = [
   { name: 'Buy', href: '/', current: true },
   { name: 'Sell/Rent', href: '/login', current: false },
@@ -14,170 +14,94 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
-
-
+  const location = useLocation();
+  const id = location.state ? location.state.id : null;
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
-  const closeDropdown = () => {
-    setIsOpen(false);
-  };
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className='w-screen'>
-      <nav className=" w-screen bg-yellow-500 border-yellow-700">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a
-            href="/"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <img
-              src="/res/logo.svg"
-              className="h-8"
-              alt="LandRise"
-            />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              LandSol
-            </span>
-          </a>
-          <button
-            data-collapse-toggle="navbar-default"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-default"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-
-          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-yellow-500">
-              <li>
+    <Disclosure as="nav" className="bg-yellow-500 border-yellow-700 w-screen">
+      {({ open }) => (
+        <>
+          <div className="flex justify-between items-center mx-auto p-4">
+            <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+              <img src="/assets/logo.svg" className="h-10 rounded-full border-4 border-black " alt="LandRise" />
+              <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                <img src="/assets/lansol.svg" alt="" />
+              </span>
+            </a>
+            <div className="md:hidden">
+              {open ? (
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                  <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Close main menu</span>
+                </Disclosure.Button>
+              ) : (
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                  <Bars3Icon className="w-5 h-5" aria-hidden="true" />
+                  <span className="sr-only">Open main menu</span>
+                </Disclosure.Button>
+              )}
+            </div>
+            <div className="hidden md:flex md:w-auto md:space-x-8">
+              {navigation.map((item) => (
                 <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent "
-                  aria-current="page"
+                  key={item.name}
+                  href={item.href}
+                  className={classNames(
+                    item.current ? 'text-blue-700 font-medium' : 'text-gray-900 hover:text-blue-700',
+                    'block px-3 py-2 rounded'
+                  )}
+                  aria-current={item.current ? 'page' : undefined}
                 >
-                  Home
+                  {item.name}
                 </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  About
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Buy
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Sell/Rent
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Transaction
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Your Properties
-                </a>
-              </li>
-            </ul>
-          </div>
-
-
-
-          <div>
-            <button
-              onClick={toggleDropdown}
-              type="button">
-
-              <div className="w-[129px] h-10 px-6 bg-amber-500 justify-start items-center gap-4 inline-flex">
-                <div className="text-right text-white text-base font-bold font-['Times New Roman'] leading-10">Login</div>
-                <div className="w-6 h-6 relative">
-                  <img className="w-[17.99px] h-[14.40px] left-[3.01px] top-[4.80px] absolute" src="https://via.placeholder.com/18x14" />
+              ))}
+            </div>
+            <div className="relative">
+              {id ? id :
+                <button onClick={toggleDropdown} className="flex items-center justify-center bg-[#F90] text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out hover:bg-blue-600">
+                  Login
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 0 1 1.414 1.414L10 11.414l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>}
+              {isOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-lg z-10">
+                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">User</a>
+                  <a href="/login/admin" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin</a>
+                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Guest</a>
                 </div>
-              </div>
-            </button>
-            {isOpen && (
-              <div className="origin-top-right absolute right-0 mt-2 w-44 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                <ul role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                  <li>
-                    <a
-                      href="/LandRise/login"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={closeDropdown}
-                    >
-                      Admin
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="/LandRise/login"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={closeDropdown}
-                    >
-                      Buyer
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      onClick={closeDropdown}
-                    >
-                      Seller
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
 
+          <Disclosure.Panel className="md:hidden">
+            <div className="border-t border-gray-200 py-2">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={classNames(
+                    item.current ? 'text-blue-700 font-medium' : 'text-gray-900 hover:text-blue-700',
+                    'block px-3 py-2'
+                  )}
+                  aria-current={item.current ? 'page' : undefined}
+                >
+                  {item.name}
+                </a>
+              ))}
 
+            </div>
 
-      </nav >
+          </Disclosure.Panel>
+        </>
+      )}
 
-
-
-    </div >
-
+    </Disclosure>
   )
 }
