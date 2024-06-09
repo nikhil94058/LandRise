@@ -2,53 +2,74 @@ import React from 'react'
 import Card from '../Components/Card'
 import Footer from '../Components/Footer'
 import { useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
+//ABIs
+import RealEstate from '../abis/RealEstate.json'
+import Escrow from '../abis/Escrow.json'
+// Config
+import config from '../config.json';
+
 
 const HomePage = () => {
   const location = useLocation();
   const id = location.state ? location.state.id : null;
+  const [provider, setProvider] = useState(null)
+  const [escrow, setEscrow] = useState(null)
 
-  const homes = [
-    {
-      'name': 'Asoka Rajpat',
-      'des': 'Good home',
-      'img': '/assets/home2.png'
-    },
-    {
-      'name': 'John Smith',
-      'des': 'Big house',
-      'img': '/assets/home2.png'
-    },
-    {
-      'name': 'Jane Doe',
-      'des': 'Modern apartment',
-      'img': '/assets/home2.png'
-    },
-    // Add more home data as needed
+  const [account, setAccount] = useState(null)
 
-    {
-      'name': 'Jane Doe',
-      'des': 'Modern apartment',
-      'img': '/assets/home2.png'
-    },
-    {
-      'name': 'Jane Doe',
-      'des': 'Modern apartment',
-      'img': '/assets/home2.png'
-    },
-    {
-      'name': 'Jane Doe',
-      'des': 'Modern apartment',
-      'img': '/assets/home2.png'
-    },
-  ]
+  const [homes, setHomes] = useState([])
+  const [home, setHome] = useState({})
+  const [toggle, setToggle] = useState(false);
+  //load Blockchain Data Function
+
+  const loadBlockchainData = async () => {
+    const provider = new ethers.providers.Web3Provider(window.ethereum)
+    setProvider(provider)
+    const network = await provider.getNetwork()
+
+    const realEstate = new ethers.Contract(config[network.chainId].realEstate.address, RealEstate, provider)
+    const totalSupply = await realEstate.totalSupply()
+    const homes = []
+
+    for (var i = 1; i <= totalSupply; i++) {
+      const uri = await realEstate.tokenURI(i)
+      const response = await fetch(uri)
+      const metadata = await response.json()
+      homes.push(metadata)
+    }
+
+    setHomes(homes)
+
+    const escrow = new ethers.Contract(config[network.chainId].escrow.address, Escrow, provider)
+    setEscrow(escrow)
+
+    window.ethereum.on('accountsChanged', async () => {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const account = ethers.utils.getAddress(accounts[0])
+      setAccount(account);
+    })
+  }
+
+
+  //useEffect
+  useEffect(() => {
+    loadBlockchainData()
+  }, [])
+
+
+  const togglePop = (home) => {
+    setHome(home)
+    toggle ? setToggle(false) : setToggle(true);
+  }
+
 
   const renderCards = () => {
     return homes.map((home, index) => (
-      <div key={index} className='m-2'>
-        <Card prop={home} />
-      </div>
-    ))
-  }
+      <Card key={index} home={home} togglePop={togglePop} />
+    ));
+  };
 
   return (
     <main className='w-full md:ml-[0rem] md:w-auto md:space-y-2 p-4'>
@@ -83,3 +104,39 @@ const HomePage = () => {
 }
 
 export default HomePage
+{/*
+const data = [
+    {
+      'name': 'Asoka Rajpat',
+      'des': 'Good home',
+      'img': '/assets/home2.png'
+    },
+    {
+      'name': 'John Smith',
+      'des': 'Big house',
+      'img': '/assets/home2.png'
+    },
+    {
+      'name': 'Jane Doe',
+      'des': 'Modern apartment',
+      'img': '/assets/home2.png'
+    },
+    // Add more home data as needed
+
+    {
+      'name': 'Jane Doe',
+      'des': 'Modern apartment',
+      'img': '/assets/home2.png'
+    },
+    {
+      'name': 'Jane Doe',
+      'des': 'Modern apartment',
+      'img': '/assets/home2.png'
+    },
+    {
+      'name': 'Jane Doe',
+      'des': 'Modern apartment',
+      'img': '/assets/home2.png'
+    },
+  ]
+*/}

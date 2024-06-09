@@ -1,33 +1,66 @@
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
 
 const LoginPage = () => {
-  const history = useNavigate();
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [metamaskConnected, setMetamaskConnected] = useState(false);
+
+  useEffect(() => {
+    if (window.ethereum) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
+          setMetamaskConnected(true);
+        } else {
+          setMetamaskConnected(false);
+        }
+      });
+    }
+  }, []);
 
   async function submit(e) {
     e.preventDefault();
 
-    try {
-      await axios.post("http://localhost:8000/", {
-        email, password
-      })
-        .then(res => {
-          if (res.data === "exist") {
-            history("/", { state: { id: email } });
-          } else if (res.data === "notexist") {
-            alert("User has not signed up");
-          }
-        })
-        .catch(e => {
-          alert("Wrong details");
-          console.log(e);
-        });
+    if (!metamaskConnected) {
+      alert("Please connect to MetaMask");
+      return;
+    }
 
-    } catch (e) {
-      console.log(e);
+    try {
+      const response = await axios.post("http://localhost:8000/", {
+        email, password
+      });
+      const { data } = response;
+
+      if (data === "exist") {
+        navigate("/", { state: { id: email } });
+      } else if (data === "notexist") {
+        alert("User has not signed up");
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      alert("Wrong details");
+    }
+  }
+
+  async function connectMetaMask() {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
+        setMetamaskConnected(true);
+        navigate("/", { state: { id: address } });
+      } catch (error) {
+        console.error('Error connecting to MetaMask:', error);
+        alert("Failed to connect to MetaMask");
+      }
+    } else {
+      alert("MetaMask is not installed");
     }
   }
 
@@ -79,6 +112,11 @@ const LoginPage = () => {
         </form>
         <div className="text-sm text-center">
           <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">Don't have an account? Sign up</Link>
+        </div>
+        <div className="mt-6">
+          <button onClick={connectMetaMask} className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+            Connect with MetaMask
+          </button>
         </div>
       </div>
     </div>

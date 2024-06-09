@@ -23,7 +23,7 @@ const SignUp = () => {
       })
         .then(res => {
           if (res.data === "success") {
-            navigate("/home", { state: { id: email } });
+            navigate("/login", { state: { id: email } });
           } else if (res.data === "exist") {
             alert("User already exists");
           }
@@ -81,7 +81,7 @@ const SignUp = () => {
           </div>
         </form>
         <div className="text-sm text-center">
-          <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">Already have an account? Log in</Link>
+          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">Already have an account? Log in</Link>
         </div>
       </div>
     </div>

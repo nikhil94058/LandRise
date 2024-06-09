@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 const navigation = [
   { name: 'Buy', href: '/', current: true },
   { name: 'Sell/Rent', href: '/login', current: false },
-  { name: ' Transaction', href: '/seller', current: false },
+  { name: ' Transaction', href: '/transaction', current: false },
   { name: 'Your Properties', href: '/login', current: false },
 ]
 
