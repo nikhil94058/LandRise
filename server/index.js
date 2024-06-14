@@ -1,83 +1,55 @@
+// index.js
+
 const express = require('express');
-const collection = require('./mongo');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const cors = require('cors');
-const multer = require('multer'); // Import multer for handling file uploads
-const uploadFileToIPFS = require('./model/uploadPinata');
+const nftRoutes = require('./routes/nftRoutes'); // Import nftRoutes
+const authRoutes = require('./routes/authRoutes'); // Import authRoutes
+const { authenticateToken, authorizeRole } = require('./middleware/auth'); // Import middleware
+
+dotenv.config(); // Load environment variables
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 8000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Enable CORS
 app.use(cors());
 
-// Configure Multer for handling file uploads
-const upload = multer();
+// Middleware to parse JSON and URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Define the endpoint for handling file uploads
-app.post('/api/upload', upload.single('file'), async (req, res) => {
-  try {
-    const file = req.file;
-
-    if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' });
-    }
-
-    // Call the uploadFileToIPFS function with the file
-    const ipfsHash = await uploadFileToIPFS(file);
-
-    res.status(200).json({ ipfsHash });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-app.get('/', cors(), (req, res) => {
+mongoose.connection.on('connected', () => {
+  console.log('MongoDB connected');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err);
+});
+
+// Routes
+app.use('/api', nftRoutes); // Use nftRoutes under /api
+app.use('/auth', authRoutes); // Use authRoutes under /auth
+
+// Root route
+app.get('/', (req, res) => {
   res.send('Welcome to the API');
 });
 
-
-app.post('/', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const check = await collection.findOne({ email });
-
-    if (check) {
-      res.json('exist');
-    } else {
-      res.json('notexist');
-    }
-  } catch (e) {
-    console.error('Error during login check:', e);
-    res.json('fail');
-  }
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
-app.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
-
-  const data = {
-    email,
-    password
-  };
-
-  try {
-    const check = await collection.findOne({ email });
-
-    if (check) {
-      res.json('exist');
-    } else {
-      await collection.insertMany([data]);
-      res.json('notexist');
-    }
-  } catch (e) {
-    console.error('Error during signup:', e);
-    res.json('fail');
-  }
-});
-
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
 import { ethers } from "ethers";
 
 const LoginPage = () => {
@@ -30,14 +31,20 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/", {
-        email, password
-      });
+      const response = await axios.post("http://localhost:8000/auth/login", { email, password });
       const { data } = response;
 
-      if (data === "exist") {
-        navigate("/", { state: { id: email } });
-      } else if (data === "notexist") {
+      if (data.message === "success") {
+        Cookies.set('token', data.token, { expires: 1 }); // Set token cookie to expire in 1 day
+        Cookies.set('role', data.role, { expires: 1 });
+        Cookies.set('email', email, { expires: 1 });
+
+        if (data.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      } else if (data.message === "notexist") {
         alert("User has not signed up");
       }
     } catch (error) {
@@ -54,7 +61,7 @@ const LoginPage = () => {
         const signer = provider.getSigner();
         const address = await signer.getAddress();
         setMetamaskConnected(true);
-        navigate("/", { state: { id: address } });
+
       } catch (error) {
         console.error('Error connecting to MetaMask:', error);
         alert("Failed to connect to MetaMask");

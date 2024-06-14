@@ -7,6 +7,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [role, setRole] = useState('user'); // Add role state
 
   async function submit(e) {
     e.preventDefault();
@@ -17,24 +18,29 @@ const SignUp = () => {
     }
 
     try {
-      await axios.post("http://localhost:8000/signup", {
+      const response = await axios.post("http://localhost:8000/auth/signup", {
         email,
-        password
-      })
-        .then(res => {
-          if (res.data === "success") {
-            navigate("/login", { state: { id: email } });
-          } else if (res.data === "exist") {
-            alert("User already exists");
-          }
-        })
-        .catch(e => {
-          alert("Error occurred during signup");
-          console.log(e);
-        });
+        password,
+        role // Include role in the request
+      });
 
-    } catch (e) {
-      console.log(e);
+      const { status } = response.data;
+
+      if (status === "success") {
+        // Assuming you want to navigate to different routes based on the role
+        if (role === 'admin') {
+          navigate("/admin", { state: { id: email } });
+        } else {
+          navigate("/login", { state: { id: email } });
+        }
+      } else if (status === "exist") {
+        alert("User already exists");
+      } else {
+        alert("Unexpected response from server");
+      }
+    } catch (error) {
+      console.error('Error during signup:', error.response ? error.response.data : error.message);
+      alert(`Error occurred during signup: ${error.message}`);
     }
   }
 
@@ -66,6 +72,14 @@ const SignUp = () => {
                 value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Confirm Password" />
+            </div>
+            <div>
+              <label htmlFor="role" className="sr-only">Role</label>
+              <select id="role" name="role" value={role} onChange={(e) => setRole(e.target.value)}
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
             </div>
           </div>
 

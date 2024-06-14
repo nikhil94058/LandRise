@@ -5,11 +5,15 @@ const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs');
 const dotenv = require('dotenv');
+const cors = require('cors'); // Import the cors package
 
 dotenv.config();
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
+
+// Enable CORS
+app.use(cors()); // Use the cors middleware
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
@@ -21,7 +25,6 @@ mongoose.connection.on('connected', () => {
   console.log('MongoDB connected');
 });
 
-
 const nftSchema = new mongoose.Schema({
   ownerName: String,
   address: String,
@@ -29,6 +32,7 @@ const nftSchema = new mongoose.Schema({
   image: String,
   documents: [String],
   tokenURI: String,
+  listingType: String, // Add the listingType field
 });
 
 const NFT = mongoose.model('NFT', nftSchema);
@@ -37,17 +41,20 @@ const pinFileToIPFS = async (filePath, fileName) => {
   const formData = new FormData();
   formData.append('file', fs.createReadStream(filePath), { filename: fileName });
 
-  const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
-    maxBodyLength: 'Infinity',
-    headers: {
-      'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-      pinata_api_key: process.env.PINATA_API_KEY,
-      pinata_secret_api_key: process.env.PINATA_SECRET_API_KEY,
-    },
-  });
+  try {
+    const response = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', formData, {
+      maxBodyLength: Infinity,
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+        pinata_api_key: process.env.PINATA_API_KEY,
+        pinata_secret_api_key: process.env.PINATA_SECRET_API_KEY,
+      },
+    });
 
-
-  return response.data.IpfsHash;
+    return response.data.IpfsHash;
+  } catch (error) {
+    throw new Error('Failed to pin file to IPFS');
+  }
 };
 
 app.post('/api/upload', upload.fields([
@@ -57,7 +64,7 @@ app.post('/api/upload', upload.fields([
   { name: "driver's license", maxCount: 1 },
 ]), async (req, res) => {
   try {
-    const { ownerName, address, price } = req.body;
+    const { ownerName, address, price, listingType } = req.body; // Include listingType
 
     const image = req.files['image'][0];
     const adharcard = req.files['adharcard'] ? req.files['adharcard'][0] : null;
@@ -73,10 +80,10 @@ app.post('/api/upload', upload.fields([
       ownerName,
       address,
       price,
+      listingType, // Include listingType in the NFT data
       image: imageHash,
       documents: [adharcardHash, passportHash, driversLicenseHash].filter(Boolean),
       tokenURI: `ipfs://${imageHash}`,
-
     };
 
     const nft = new NFT(nftData);
@@ -90,8 +97,16 @@ app.post('/api/upload', upload.fields([
   }
 });
 
+app.get('/api/nfts', async (req, res) => {
+  try {
+    const nfts = await NFT.find();
+    res.json({ nfts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-
 });

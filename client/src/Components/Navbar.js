@@ -4,9 +4,9 @@ import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useLocation } from "react-router-dom";
 const navigation = [
   { name: 'Buy', href: '/', current: true },
-  { name: 'Sell/Rent', href: '/login', current: false },
+  { name: 'Sell/Rent', href: '/register', current: false },
   { name: ' Transaction', href: '/transaction', current: false },
-  { name: 'Your Properties', href: '/login', current: false },
+  { name: 'Your Properties', href: '/property/:id', current: false },
 ]
 
 function classNames(...classes) {
@@ -66,15 +66,13 @@ export default function Navbar() {
               {id ? id :
                 <button onClick={toggleDropdown} className="flex items-center justify-center bg-[#F90] text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors duration-300 ease-in-out hover:bg-blue-600">
                   Login
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 0 1 1.414 1.414L10 11.414l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4a1 1 0 0 1-1.414 0l-4-4a1 1 0 0 1 0-1.414z" clipRule="evenodd" />
-                  </svg>
+
                 </button>}
               {isOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-lg z-10">
                   <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">User</a>
-                  <a href="/login/admin" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin</a>
-                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Guest</a>
+                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin</a>
+                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Register</a>
                 </div>
               )}
             </div>

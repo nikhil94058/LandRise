@@ -1,155 +1,99 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Land = () => {
+  const location = useLocation();
+  const { nft } = location.state || {};
+  console.log('Location state:', location.state);
+
+  useEffect(() => {
+    // Set the document title based on the property title or a default value
+    document.title = nft && nft.ownerName ? `${nft.ownerName}'s Property` : 'Property Details';
+  }, [nft]);
+
+  if (!nft) {
+    return <p>No property data available</p>;
+  }
+
+  const imageUrl = nft.image
+    ? `https://gateway.pinata.cloud/ipfs/${nft.image}`
+    : 'https://via.placeholder.com/461x382';
+
+  const reviews = [
+    {
+      reviewer: 'Alice Smith',
+      date: '2024-01-01',
+      comment: 'Great property with a fantastic view!'
+    },
+    {
+      reviewer: 'Bob Johnson',
+      date: '2024-02-15',
+      comment: 'Very comfortable and well-maintained.'
+    }
+  ];
+
   return (
-    <div className='mt-[5rem]'>
+    <div className="mt-20 px-4">
       <center>
-        <div className="w-[870px] h-[63.09px] text-black text-4xl font-normal font-['Times New Roman']">10 Hectares Land Available For Sale in Patna</div>
-        <div className='flex flex-row space-x-5'>
-          <img className="w-[461px] h-[381.52px]" src="https://via.placeholder.com/461x382" />
-          <div className="w-[551px] h-48 bg-lime-200 rounded-[25px] text-black text-[32px] font-normal font-['Inter']" >
-            ESTIMATED COST : Rs. 30 lakh
-            LOCATION: Near Bhagalpur, Patna, Bihar
-
-
-          </div>
+        <div className="text-4xl font-normal font-['Times New Roman'] text-black mb-8">
+          {nft.ownerName ? `${nft.ownerName}'s Property` : 'Property Title'}
         </div>
-        <div className="w-[419px] h-[94px] bg-lime-200 rounded-full text-black text-[32px] font-normal font-['Inter']" >Confirm Deal</div>
-
-
-        <div className="w-[1449px] h-[1058px] relative bg-gradient-to-b from-lime-200 to-lime-200">
-          <div className="pr-[45.58px] pb-px left-[96px] top-[83px] absolute justify-start items-start inline-flex">
-            <div className="w-[563.42px] text-slate-900 text-4xl font-extrabold font-['Inter'] leading-[45px]">Reviews About This Property</div>
-          </div>
-          <div className="w-[1248px] left-[96px] top-[623.98px] absolute justify-center items-center gap-[73.25px] inline-flex">
-            <div className="text-slate-900 text-[23px] font-extrabold font-['Inter'] leading-[30px]">Featured in:</div>
-            <div className="grow shrink basis-0 h-[95px] px-[42.88px] justify-center items-start gap-9 inline-flex">
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch px-[0.29px] justify-center items-center inline-flex">
-                  <div className="w-[129.43px] h-[95px] relative flex-col justify-start items-start flex">
-                    <div className="w-[129.48px] h-[95px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                  <div className="w-[130px] h-[19.62px] relative flex-col justify-start items-start flex">
-                    <div className="w-[130px] h-[19.57px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch py-[26.24px] justify-center items-center inline-flex">
-                  <div className="w-[130px] h-[42.52px] relative flex-col justify-start items-start flex">
-                    <div className="w-[129.97px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch py-[24.24px] justify-center items-center inline-flex">
-                  <div className="w-[130px] h-[46.52px] relative flex-col justify-start items-start flex">
-                    <div className="w-[129.97px] h-[46.44px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch py-[6.22px] justify-center items-center inline-flex">
-                  <div className="w-[130px] h-[82.56px] relative flex-col justify-start items-start flex">
-                    <div className="w-[130px] h-[82.57px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                <div className="grow shrink basis-0 self-stretch justify-center items-center inline-flex">
-                  <div className="w-[130px] h-[26.53px] relative flex-col justify-start items-start flex">
-                    <div className="w-[130px] h-[26.53px] relative">
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <div className="flex flex-col lg:flex-row items-center lg:space-x-5 space-y-5 lg:space-y-0">
+          <img className="w-full lg:w-1/2 h-auto rounded" src={imageUrl} alt="Property" />
+          <div className="w-full lg:w-1/2 bg-lime-200 rounded-2xl p-6 text-black text-2xl font-normal font-['Inter'] flex flex-col space-y-2">
+            <div>
+              <strong>ESTIMATED COST: </strong>{nft.price ? `Rs. ${nft.price}` : 'Price not available'}
+            </div>
+            <div>
+              <strong>LOCATION: </strong>{nft.address || 'Location not available'}
+            </div>
+            <div>
+              <strong>VERIFIED SCENE: </strong>{nft.verified ? 'This property is verified' : 'Verification Done'}
+            </div>
+            <div>
+              <strong>STATUS: </strong>{nft.listingType === 'rent' ? 'For Rent' : 'For Sale'}
             </div>
           </div>
-          <div className="w-[2222px] pr-[848px] left-[-776px] top-[239px] absolute justify-start items-start inline-flex">
-            <div className="pl-[424px] justify-end items-center gap-6 flex">
-              <div className="self-stretch pl-9 pr-[49.14px] pt-[85.98px] pb-[100px] bg-white rounded-[48px] shadow justify-start items-start inline-flex">
-                <div className="w-[314.86px] text-slate-900 text-sm font-normal font-['Inter'] leading-tight">My son who works in IT suggested I try this app after I was getting lots of strange messages and things happening on my phone. Since running it once a week I have had no viruses or malware problems. I also got a VPN app so I think with both I’m all set!</div>
-              </div>
-              <div className="self-stretch px-9 pt-9 pb-24 bg-white rounded-[48px] shadow flex-col justify-start items-start gap-6 inline-flex">
-                <div className="pr-[193.62px] pt-0.5 justify-start items-start gap-[3.59px] inline-flex">
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
+        </div>
+        <div className="mt-8 w-full lg:w-1/3 bg-lime-200 rounded-full py-4 text-black text-2xl font-normal font-['Inter'] text-center cursor-pointer">
+          Confirm Deal
+        </div>
+        <div className="mt-12 w-full bg-gradient-to-b from-lime-200 to-lime-200 p-8 rounded-xl">
+          <div className="mb-8 text-slate-900 text-4xl font-extrabold font-['Inter'] leading-tight">
+            Reviews About This Property
+          </div>
+          <div className="space-y-4">
+            {reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <div key={index} className="bg-white p-4 rounded shadow">
+                  <div className="font-bold">{review.reviewer}</div>
+                  <div className="text-gray-600">{review.date}</div>
+                  <div className="mt-2">{review.comment}</div>
                 </div>
-                <div className="w-[312.47px] text-slate-900 text-base font-normal font-['Inter'] leading-tight">We had an amazing experience staying at this property. The location was perfect and the amenities were top-notch. Highly recommended!</div>
-                <div className="text-slate-900 text-[15px] font-extrabold font-['Inter'] leading-tight">colinandmandy94</div>
-              </div>
-              <div className="self-stretch p-9 bg-white rounded-[48px] shadow flex-col justify-start items-start gap-6 inline-flex">
-                <div className="pr-[193.62px] pt-0.5 justify-start items-start gap-[3.59px] inline-flex">
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                </div>
-                <div className="w-[318.79px] text-slate-900 text-base font-normal font-['Inter'] leading-tight">The property was nice, but the check-in process was chaotic. We had to wait in line for over an hour before getting our keys.
-                  <br />.</div>
-                <div className="text-slate-900 text-[15px] font-extrabold font-['Inter'] leading-tight">Jennifer Black</div>
-              </div>
-              <div className="self-stretch px-9 pt-9 pb-24 bg-white rounded-[48px] shadow flex-col justify-start items-start gap-6 inline-flex">
-                <div className="pr-[193.62px] pt-0.5 justify-start items-start gap-[3.59px] inline-flex">
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                  <div className="w-6 h-6 justify-center items-center flex">
-                    <div className="w-6 h-6 relative flex-col justify-start items-start flex" />
-                  </div>
-                </div>
-                <div className="w-[313.11px] text-slate-900 text-base font-normal font-['Inter'] leading-tight">I was pleasantly surprised by how modern and stylish this property was. The location was convenient, and the staff was friendly and helpful.
-                  <br /></div>
-                <div className="text-slate-900 text-[15px] font-extrabold font-['Inter'] leading-tight">Phillip Colligan</div>
-              </div>
+              ))
+            ) : (
+              <p>No reviews available</p>
+            )}
+          </div>
+        </div>
+        <div className="mt-12 w-full bg-gradient-to-b from-lime-200 to-lime-200 p-8 rounded-xl">
+          <div className="mb-8 text-slate-900 text-4xl font-extrabold font-['Inter'] leading-tight">
+            Links and Contact Details
+          </div>
+          <div className="text-black text-xl font-normal font-['Inter'] space-y-4">
+            <div>
+              <a href={nft.tokenURI || '#'} className="text-blue-500 underline" target="_blank" rel="noopener noreferrer">
+                More Details
+              </a>
+            </div>
+            <div>
+              <strong>Contact:</strong> {nft.contact || 'Contact details not available'}
             </div>
           </div>
         </div>
       </center>
     </div>
-  )
-}
+  );
+};
 
-export default Land
+export default Land;
