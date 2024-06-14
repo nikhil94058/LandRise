@@ -7,7 +7,7 @@ const cors = require('cors');
 const nftRoutes = require('./routes/nftRoutes'); // Import nftRoutes
 const authRoutes = require('./routes/authRoutes'); // Import authRoutes
 const { authenticateToken, authorizeRole } = require('./middleware/auth'); // Import middleware
-
+const path = require("path");
 dotenv.config(); // Load environment variables
 
 const app = express();
@@ -38,16 +38,23 @@ mongoose.connection.on('error', (err) => {
 app.use('/api', nftRoutes); // Use nftRoutes under /api
 app.use('/auth', authRoutes); // Use authRoutes under /auth
 
-// Root route
-app.get('/', (req, res) => {
-  res.send('Welcome to the API');
-});
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+//connecting frontend
+app.get("/", (req, res) => {
+  app.use(express.static(path.resolve(__dirname, "client", "build")));
+  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+});
+
+
+
 
 // Start the server
 app.listen(port, () => {
