@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
-
+import { base_url } from "../urls";
 const SignUp = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -18,7 +18,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8000/auth/signup", {
+      const response = await axios.post(`${base_url}/auth/signup`, {
         email,
         password,
         role // Include role in the request

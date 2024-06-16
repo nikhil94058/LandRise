@@ -4,8 +4,10 @@ import { FaPlus } from 'react-icons/fa';
 import RealEstateABI from '../abis/RealEstate.json';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { base_url } from "../urls";
 import Cookies from 'js-cookie';
-const LandregisteryPage = ({ contractAddress }) => {
+
+const LandRegistryPage = ({ contractAddress }) => {
   const email = Cookies.get('email');
   const location = useLocation();
   const id = location.state ? location.state.id : null;
@@ -21,7 +23,7 @@ const LandregisteryPage = ({ contractAddress }) => {
   const [address, setAddress] = useState('');
   const [username, setUsername] = useState('');
   const [listingType, setListingType] = useState('sale');
-
+  const [token, setToken] = useState(null);
   useEffect(() => {
     const getAddress = async () => {
       if (window.ethereum) {
@@ -59,7 +61,12 @@ const LandregisteryPage = ({ contractAddress }) => {
       setRol(role);
     }
   }, [role]);
-
+  useEffect(() => {
+    const tokenFromCookie = Cookies.get('token');
+    if (tokenFromCookie) {
+      setToken(tokenFromCookie);
+    }
+  }, []);
   if (role === 'user') {
     return <p>You are not authorised please signed as Admin</p>
   }
@@ -78,8 +85,11 @@ const LandregisteryPage = ({ contractAddress }) => {
 
   const uploadFileToIPFS = async (formData) => {
     try {
-      const response = await fetch(`${window.location.origin}/api/upload`, {
+      const response = await fetch(`${base_url}/api/upload`, {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the Bearer token here
+        },
         body: formData
       });
 
@@ -116,7 +126,7 @@ const LandregisteryPage = ({ contractAddress }) => {
       });
 
       const tokenURI = await uploadFileToIPFS(formData);
-
+      console.log(tokenURI);
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       const contract = new ethers.Contract(contractAddress, RealEstateABI.abi, signer);
@@ -222,4 +232,4 @@ const LandregisteryPage = ({ contractAddress }) => {
   );
 };
 
-export default LandregisteryPage;
+export default LandRegistryPage;

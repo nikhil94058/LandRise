@@ -4,7 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Card from '../Components/Card';
 import Footer from '../Components/Footer';
-
+import { base_url } from '../urls';
 const HomePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const HomePage = () => {
 
     const loadBlockchainData = async () => {
       try {
-        const response = await axios.get(`${window.location.origin}/api/nfts`);
+        const response = await axios.get(`${base_url}/api/nfts`);
         if (!response.data || !response.data.nfts) {
           throw new Error('Failed to fetch blockchain data');
         }

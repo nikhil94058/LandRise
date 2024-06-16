@@ -11,7 +11,9 @@ import Footer from './Components/Footer';
 import LandregisteryPage from './Pages/LandregisteryPage';
 import Transaction from './Pages/Transaction';
 import { useEffect, useState } from 'react';
-
+import MintNFT from './Pages/MintNFT';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 // ProtectedRoute component to handle role-based routing
 const ProtectedRoute = ({ children, allowedRole }) => {
   const userRole = localStorage.getItem('userRole') || 'guest';
@@ -21,6 +23,10 @@ const ProtectedRoute = ({ children, allowedRole }) => {
 function App() {
   // Retrieve the user's role from localStorage or default to 'guest' if not available
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'guest');
+
+
+
+  const stripePromise = loadStripe('your-publishable-key-here');
 
   // Listen for changes in localStorage (e.g., userRole updates)
   useEffect(() => {
@@ -52,9 +58,10 @@ function App() {
               <Route exact path="/" element={<HomePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/property/:id" element={<Land />} />
+              <Route path="/property/:id" element={<Elements stripe={stripePromise}><Land /></Elements>} />
               <Route path="/register" element={<LandregisteryPage />} />
               <Route path="/transaction" element={<Transaction />} />
+              <Route path="/mintNFT" element={<MintNFT />} />
               <Route
                 path="/admin"
                 element={

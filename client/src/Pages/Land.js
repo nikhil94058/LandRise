@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import PaymentForm from '../Components/PaymentForm'; // Ensure the correct path
 
 const Land = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { nft } = location.state || {};
-  console.log('Location state:', location.state);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
-    // Set the document title based on the property title or a default value
     document.title = nft && nft.ownerName ? `${nft.ownerName}'s Property` : 'Property Details';
   }, [nft]);
 
@@ -32,6 +33,11 @@ const Land = () => {
     }
   ];
 
+  const handlePaymentSuccess = () => {
+    alert('Payment successful! The NFT ownership has been transferred.');
+    navigate('/'); // Redirect to the homepage or another page after successful payment
+  };
+
   return (
     <div className="mt-20 px-4">
       <center>
@@ -55,9 +61,7 @@ const Land = () => {
             </div>
           </div>
         </div>
-        <div className="mt-8 w-full lg:w-1/3 bg-lime-200 rounded-full py-4 text-black text-2xl font-normal font-['Inter'] text-center cursor-pointer">
-          Confirm Deal
-        </div>
+        <PaymentForm nft={nft} onSuccess={handlePaymentSuccess} />
         <div className="mt-12 w-full bg-gradient-to-b from-lime-200 to-lime-200 p-8 rounded-xl">
           <div className="mb-8 text-slate-900 text-4xl font-extrabold font-['Inter'] leading-tight">
             Reviews About This Property

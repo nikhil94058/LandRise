@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const nftController = require('../controllers/nftController');
 const { authenticateToken, authorizeRole } = require('../middleware/auth'); // Ensure this path is correct
-
+const { buyNftController } = require('../controllers/nftController');
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
@@ -10,7 +10,7 @@ const upload = multer({ dest: 'uploads/' });
 router.post(
   '/upload',
   authenticateToken, // Authenticate first
-  authorizeRole('admin'), // Then authorize
+  // authorizeRole('admin'), // Then authorize
   upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'adharcard', maxCount: 1 },
@@ -25,5 +25,13 @@ router.get(
   '/nfts',
   nftController.getNFTs
 );
+
+
+
+
+router.post('/buy-nft/:nftId', buyNftController);
+
+module.exports = router;
+
 
 module.exports = router;

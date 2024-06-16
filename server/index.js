@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const nftRoutes = require('./routes/nftRoutes'); // Import nftRoutes
 const authRoutes = require('./routes/authRoutes'); // Import authRoutes
+
 const { authenticateToken, authorizeRole } = require('./middleware/auth'); // Import middleware
 const path = require("path");
 dotenv.config(); // Load environment variables
@@ -49,8 +50,8 @@ app.use((err, req, res, next) => {
 
 //connecting frontend
 app.get("/", (req, res) => {
-  app.use(express.static(path.resolve(__dirname, "client", "build")));
-  res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  res.send("Welcome to LandSol API\n Listening...");
+
 });
 
 

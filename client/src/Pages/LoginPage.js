@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { ethers } from "ethers";
-
+import { base_url } from "../urls";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -31,7 +31,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post(`${window.location.origin}/auth/login`, { email, password });
+      const response = await axios.post(`${base_url}/auth/login`, { email, password });
       const { data } = response;
 
       if (data.message === "success") {
@@ -40,7 +40,7 @@ const LoginPage = () => {
         Cookies.set('email', email, { expires: 1 });
 
         if (data.role === "admin") {
-          navigate("/admin");
+          navigate("/");
         } else {
           navigate("/");
         }
