@@ -1,6 +1,42 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import { base_url } from '../urls';
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [firstName, setFirstname] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [review, setReview] = useState("");
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = { email, firstName, lastName, phone, review };
+
+    try {
+      const response = await fetch(`${base_url}/general/feedback/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert('Review submitted successfully');
+        // Reset form fields
+        setEmail("");
+        setFirstname("");
+        setLastName("");
+        setPhone("");
+        setReview("");
+      } else {
+        alert('Failed to submit review');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to submit review');
+    }
+  };
+
   return (
     <footer className="bg-yellow-500 py-12">
       <div className="container mx-auto px-4">
@@ -15,37 +51,25 @@ const Footer = () => {
 
           {/* Form */}
           <div className="w-full md:w-1/2 lg:w-1/3">
-            <form className="max-w-sm mx-auto md:mx-0">
+            <form className="max-w-sm mx-auto md:mx-0" onSubmit={handleSubmit}>
               {/* Input Fields */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input
                   type="email"
                   name="email"
                   id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
                   placeholder="Email Address"
-                  required
-                />
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
-                  placeholder="Password"
-                  required
-                />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
-                  placeholder="Confirm Password"
                   required
                 />
                 <input
                   type="text"
                   name="firstName"
                   id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstname(e.target.value)}
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
                   placeholder="First Name"
                   required
@@ -54,6 +78,8 @@ const Footer = () => {
                   type="text"
                   name="lastName"
                   id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
                   placeholder="Last Name"
                   required
@@ -62,17 +88,21 @@ const Footer = () => {
                   type="tel"
                   name="phone"
                   id="phone"
-                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                  pattern="^\d{10}$"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
-                  placeholder="Phone Number (123-456-7890)"
+                  placeholder="Phone Number (1234567890)"
                   required
                 />
                 <input
                   type="text"
-                  name="company"
-                  id="company"
+                  name="review"
+                  id="review"
+                  value={review}
+                  onChange={(e) => setReview(e.target.value)}
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
-                  placeholder="Company (Ex. Google)"
+                  placeholder="feedback.."
                   required
                 />
               </div>

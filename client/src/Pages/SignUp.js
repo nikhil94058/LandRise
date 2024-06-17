@@ -2,6 +2,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from "react";
 import { base_url } from "../urls";
+
 const SignUp = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -24,16 +25,16 @@ const SignUp = () => {
         role // Include role in the request
       });
 
-      const { status } = response.data;
+      const { message } = response.data;
 
-      if (status === "success") {
+      if (message === "success") {
         // Assuming you want to navigate to different routes based on the role
         if (role === 'admin') {
           navigate("/admin", { state: { id: email } });
         } else {
           navigate("/login", { state: { id: email } });
         }
-      } else if (status === "exist") {
+      } else if (message === "exist") {
         alert("User already exists");
       } else {
         alert("Unexpected response from server");

@@ -58,13 +58,15 @@ const HomePage = () => {
     ));
   };
 
-  const Section = ({ title, homes }) => (
+  const Section = ({ title, homes, togglePop }) => (
     <section className="my-8">
       <div className="lg:block bg-cover w-2/3 bg-center" style={{ backgroundImage: 'url("/assets/back.svg")' }}>
         <h2 className="text-center m-5 md:text-left text-black text-3xl font-bold font-['Inika'] mb-4">{title}</h2>
       </div>
-      <div className="flex w-full overflow-x-auto space-x-4">
-        {renderCards(homes)}
+      <div className="flex w-full overflow-x-auto">
+        <div className="flex space-x-4">
+          {renderCards(homes, togglePop)}
+        </div>
       </div>
     </section>
   );
@@ -87,7 +89,6 @@ const HomePage = () => {
         </>
       )}
 
-      <Footer />
     </main>
   );
 };

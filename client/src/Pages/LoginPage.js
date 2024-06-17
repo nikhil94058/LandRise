@@ -27,7 +27,7 @@ const LoginPage = () => {
 
     if (!metamaskConnected) {
       alert("Please connect to MetaMask");
-      return;
+
     }
 
     try {

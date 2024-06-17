@@ -36,12 +36,12 @@ export default function Navbar() {
             </a>
             <div className="md:hidden">
               {open ? (
-                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-yellow-500 rounded-lg hover:bg-yellow-800 focus:outline-none focus:ring-2 focus:ring-yellow-500 dark:text-yellow-400 dark:hover:bg-yellow-500 dark:focus:ring-yellow-500">
                   <XMarkIcon className="w-5 h-5" aria-hidden="true" />
                   <span className="sr-only">Close main menu</span>
                 </Disclosure.Button>
               ) : (
-                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                <Disclosure.Button className="inline-flex items-center justify-center p-2 w-10 h-10 text-yellow-500 rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-800 dark:text-yellow-400 dark:hover:bg-yellow-700 dark:focus:ring-yellow-600">
                   <Bars3Icon className="w-5 h-5" aria-hidden="true" />
                   <span className="sr-only">Open main menu</span>
                 </Disclosure.Button>
@@ -53,7 +53,7 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current ? 'text-blue-700 font-medium' : 'text-gray-900 hover:text-blue-700',
+                    item.current ? 'text-blue-700 font-medium' : 'text-yellow-900 hover:text-blue-700',
                     'block px-3 py-2 rounded'
                   )}
                   aria-current={item.current ? 'page' : undefined}
@@ -70,22 +70,22 @@ export default function Navbar() {
                 </button>}
               {isOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md overflow-hidden shadow-lg z-10">
-                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">User</a>
-                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Admin</a>
-                  <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Register</a>
+                  <a href="/login" className="block px-4 py-2 text-yellow-800 hover:bg-yellow-200">User</a>
+                  <a href="/login" className="block px-4 py-2 text-yellow-800 hover:bg-yellow-200">Admin</a>
+                  <a href="/login" className="block px-4 py-2 text-yellow-800 hover:bg-yellow-200">Register</a>
                 </div>
               )}
             </div>
           </div>
 
           <Disclosure.Panel className="md:hidden">
-            <div className="border-t border-gray-200 py-2">
+            <div className="border-t border-yellow-200 py-2">
               {navigation.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
                   className={classNames(
-                    item.current ? 'text-blue-700 font-medium' : 'text-gray-900 hover:text-blue-700',
+                    item.current ? 'text-blue-700 font-medium' : 'text-yellow-900 hover:text-blue-700',
                     'block px-3 py-2'
                   )}
                   aria-current={item.current ? 'page' : undefined}
