@@ -95,8 +95,7 @@ const Footer = () => {
                   placeholder="Phone Number (1234567890)"
                   required
                 />
-                <input
-                  type="text"
+                <textarea
                   name="review"
                   id="review"
                   value={review}
@@ -104,7 +103,9 @@ const Footer = () => {
                   className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
                   placeholder="feedback.."
                   required
-                />
+                  rows="4"
+                ></textarea>
+
               </div>
 
               {/* Submit Button */}
