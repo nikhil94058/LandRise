@@ -1,95 +1,112 @@
 import React from 'react';
 
-const MainContainer = ({ children }) => {
-  return (
-    <div className="w-[1872px] h-[670px] pl-[53px] pr-[72px] pt-[68px] pb-[30.44px] bg-yellow-400 justify-start items-center inline-flex">
-      {children}
-    </div>
-  );
-};
-
-const ContentContainer = ({ children }) => {
-  return (
-    <div className="w-[1747px] h-[571.56px] relative">
-      {children}
-    </div>
-  );
-};
-
-const TextBlock = ({ text, className }) => {
-  return (
-    <div className={className}>{text}</div>
-  );
-};
-
-const FormContainer = ({ children }) => {
-  return (
-    <div className="w-[748.15px] h-[451.26px] left-[960.60px] top-0 absolute">
-      {children}
-    </div>
-  );
-};
-
-const CopyrightText = ({ text }) => {
-  return (
-    <div className="w-[305.92px] h-[18.92px] left-[679.45px] top-[535.89px] absolute text-center text-white text-sm font-bold font-['Times New Roman'] leading-relaxed">{text}</div>
-  );
-};
-
-const SocialIcons = () => {
-  return (
-    <div className="w-[252.03px] h-[36.39px] left-[1334.46px] top-[535.17px] absolute">
-      {/* Social icons */}
-    </div>
-  );
-};
-
-
-
-const Form = () => {
-  return (
-    <div className="w-[748.15px] bg-white rounded-[20px] shadow p-6">
-      <input type="text" placeholder="Name" className="w-full mb-4 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-slate-900" />
-      <input type="email" placeholder="Email Address" className="w-full mb-4 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-slate-900" />
-      <select className="w-full mb-4 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-slate-900">
-        <option value="">Interested In</option>
-        <option value="buying">Buying</option>
-        <option value="selling">Selling</option>
-        <option value="renting">Renting</option>
-      </select>
-      <textarea placeholder="Message" className="w-full mb-4 px-4 py-2 rounded border border-gray-300 focus:outline-none focus:border-slate-900"></textarea>
-      <label className="flex items-center">
-        <input type="checkbox" className="form-checkbox mr-2 border border-gray-300 focus:outline-none focus:border-slate-900" />
-        <span className="text-gray-700">I have read and agree to the terms and conditions</span>
-      </label>
-      <button className="w-[206.71px] h-[36.39px] bg-sky-500 rounded-[10px] shadow">Send</button>
-    </div>
-  );
-};
-
-
-
 const Footer = () => {
   return (
-    <div>
-      <MainContainer>
-        <ContentContainer>
-          <TextBlock text="Buy, sell, rent your property safely overcoming the hazards of fraudulent payments and transactions with blockchain based information that remains untouched for years." className="w-[592.80px] h-16 left-[150.98px] top-[343.99px] absolute text-slate-900 text-base font-bold font-['Tienne'] leading-[30px]" />
-          <TextBlock text="ALL IN ONE REAL ESTATE PORTAL" className="w-[619.48px] h-[88.80px] left-[151px] top-[198px] absolute text-slate-900 text-[44px] font-bold font-['Tienne'] leading-[60px]" />
-          <FormContainer>
-            <Form />
-          </FormContainer>
-        </ContentContainer>
-        <CopyrightText text="© 2020 Lift Media. All rights reserved." />
-        <SocialIcons />
+    <footer className="bg-yellow-500 py-12">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          {/* Footer Content */}
+          <div className="w-full md:w-1/2 lg:w-1/3 mb-8 md:mb-0">
+            <h2 className="text-2xl md:text-4xl text-white font-bold mb-4">ALL IN ONE REAL ESTATE PORTAL</h2>
+            <p className="text-white text-sm md:text-base">
+              Buy, sell, rent your property safely overcoming the hazards of fraudulent payments and transactions with blockchain-based information that remains untouched for years.
+            </p>
+          </div>
 
-      </MainContainer>
-      <div className='justify-center flex-center bg-[#FFE91E]'>
-        <center>
-          <div className="w-[305.92px] h-[18.92px] text-center text-white text-sm font-bold font-['Times New Roman'] leading-relaxed">© 2020 Lift Media. All rights reserved. </div>
-        </center>
+          {/* Form */}
+          <div className="w-full md:w-1/2 lg:w-1/3">
+            <form className="max-w-sm mx-auto md:mx-0">
+              {/* Input Fields */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input
+                  type="email"
+                  name="email"
+                  id="email"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Email Address"
+                  required
+                />
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Password"
+                  required
+                />
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Confirm Password"
+                  required
+                />
+                <input
+                  type="text"
+                  name="firstName"
+                  id="firstName"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="First Name"
+                  required
+                />
+                <input
+                  type="text"
+                  name="lastName"
+                  id="lastName"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Last Name"
+                  required
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  id="phone"
+                  pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Phone Number (123-456-7890)"
+                  required
+                />
+                <input
+                  type="text"
+                  name="company"
+                  id="company"
+                  className="bg-white focus:ring-blue-500 focus:border-blue-500 block w-full border-gray-300 rounded-md py-2.5 px-4 text-sm text-gray-900"
+                  placeholder="Company (Ex. Google)"
+                  required
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="mt-4 w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 text-white font-medium rounded-lg py-2.5 px-5 text-center"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+
+        {/* Social Media Icons */}
+        <div className="flex justify-center mt-8">
+          <div className="flex space-x-4">
+            <a href="https://www.facebook.com/">
+              <img className="w-9 h-9" src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook" />
+            </a>
+            <a href="https://twitter.com/">
+              <img className="w-9 h-9" src="https://upload.wikimedia.org/wikipedia/en/6/60/Twitter_Logo_as_of_2021.svg" alt="Twitter" />
+            </a>
+            <a href="https://www.linkedin.com/">
+              <img className="w-9 h-9" src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn" />
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
+      <div className="text-center text-white text-sm">
+        &copy; 2024 .Landsol All rights reserved.
+      </div>
+    </footer>
   );
 };
 

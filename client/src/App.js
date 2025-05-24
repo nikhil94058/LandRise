@@ -1,71 +1,82 @@
-import React from 'react';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import Trends from './components/Trends';
-import HomePage from './Pages/HomePage';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import SliderC from './components/SliderC';
-import PropertyPage from './Pages/PropertyPage'
-import Chatbot from './components/Chatbot';
-import { Auth } from './components/auth';
+import logo from './logo.svg';
 import './App.css';
-import { db } from './config/firebase';
-import { getDocs,collection } from 'firebase/firestore';
+import HomePage from './Pages/HomePage';
+import Navbar from './Components/Navbar';
+import Test from './Components/Test';
+import LoginPage from './Pages/LoginPage';
+import Land from './Pages/Land';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Signup from './Pages/SignUp';
+import Footer from './Components/Footer';
+import LandregisteryPage from './Pages/LandregisteryPage';
+import Transaction from './Pages/Transaction';
+import { useEffect, useState } from 'react';
+
+// ProtectedRoute component to handle role-based routing
+const ProtectedRoute = ({ children, allowedRole }) => {
+  const userRole = localStorage.getItem('userRole') || 'guest';
+  return userRole === allowedRole ? children : <Navigate to="/login" />;
+};
 
 function App() {
-  const [userList, setUserList] = useState([]);
+  // Retrieve the user's role from localStorage or default to 'guest' if not available
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'guest');
 
-  const usersCollectionRef = collection(db, "users")
-
-  useEffect(() => {   
-    const getUserList = async () => {
-      // read data and set list
-      try{
-        const data= await getDocs(usersCollectionRef);
-        const filteredData = data.docs.map((doc => ({
-          ...doc.data(),
-          id: doc.id,
-        })));
-        setUserList(filteredData);
-      } catch(err){
-        console.error(err);
-      }
-      
+  // Listen for changes in localStorage (e.g., userRole updates)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUserRole(localStorage.getItem('userRole') || 'guest');
     };
-    getUserList();
 
-  } , []);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
-  const getUserList = async () => {
-    const usersRef = db.collection('users');
-    const snapshot = await usersRef.get();
-    const usersList = snapshot.docs.map(doc => doc.data());
-    setUserList(usersList);
-  }
+  // Set document title with logo image dynamically
+  useEffect(() => {
+    document.title = userRole === 'admin' ? `Admin Dashboard | LandSol` : `User Dashboard | LandSol`;
+  }, [userRole]);
+
   return (
-    <>
-      <Router>
-        <Chatbot />
-        <div>
-          <Navbar />
-          <Sidebar />
-          <Trends />
-          <Sell />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/" component={<SliderC />} />
-            {/*<Route path="/property/:id" component={PropertyPage} />*/}
-            <Route path="/test" element={<Sell />} />
-          </Routes>
+    <main className="h-screen">
+      <div className="flex flex-col h-full">
+        <Navbar />
+        <div className="flex flex-grow">
+          <div className="fixed left-0 top-[4.4rem] h-full">
+            <Test />
+          </div>
+          <div className="md:ml-[6rem] container overflow-y-auto">
+            <Routes>
+              <Route exact path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/property/:id" element={<Land />} />
+              <Route path="/register" element={<LandregisteryPage />} />
+              <Route path="/transaction" element={<Transaction />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRole="admin">
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/user"
+                element={
+                  <ProtectedRoute allowedRole="user">
+                    <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
         </div>
-      </Router>
-      <div classname="App">
-        <Auth />
-        
-          
+        <Footer />
       </div>
-    </>
+    </main>
   );
 }
 
