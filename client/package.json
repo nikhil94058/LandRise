@@ -1,8 +1,8 @@
 {
-  "homepage": "https://nikhil94058.github.io/",
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://nikhil94058.github.io/LandRise",
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -25,12 +25,12 @@
     "web3": "^4.9.0"
   },
   "scripts": {
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -54,7 +54,7 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@openzeppelin/contracts": "^4.7.3",
     "ethers": "^5.7.2",
-    "gh-pages": "^6.1.1",
+    "gh-pages": "^6.3.0",
     "hardhat": "^2.22.5",
     "tailwindcss": "^3.4.3"
   }
